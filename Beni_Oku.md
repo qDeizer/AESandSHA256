@@ -1,0 +1,1 @@
+projeyi zip olarak indirip zipden cikartin. klasore sag tiklayip  visual studio ile acin.  projeyi baslatin. karsiniza cikan konsolda  "http://localhost:5000" gibi alti cizili bir adres var. imleci Bu adresin uzerine getirip ctrl + sol tik yaparak projeyi baslatabilirsiniz.
