@@ -1,6 +1,4 @@
-﻿// ... existing code ...
-
-// Form validation fonksiyonları
+﻿// Form validation fonksiyonları
 function formKontrol(element, durum) {
     element.classList.remove('error', 'warning');
     if (durum) {
@@ -27,6 +25,28 @@ function formlariTemizle(formId) {
     }
 }
 
+// Metin kopyalama fonksiyonu
+function metniKopyala(elementId) {
+    const element = document.getElementById(elementId);
+    const text = element.textContent || element.innerText;
+
+    if (text && !text.includes('görüntülenecek') && !text.includes('Hata oluştu')) {
+        navigator.clipboard.writeText(text).then(function () {
+            // Başarılı kopyalama bildirimi
+            const originalText = element.innerHTML;
+            element.innerHTML = '<i class="fas fa-check"></i> Kopyalandı!';
+            element.style.color = '#00ff00';
+
+            setTimeout(() => {
+                element.innerHTML = originalText;
+                element.style.color = '';
+            }, 2000);
+        }).catch(function (err) {
+            console.error('Kopyalama hatası: ', err);
+        });
+    }
+}
+
 // SHA-256 işlemleri
 function metinOzetiCikar() {
     const metinInput = document.getElementById('metin');
@@ -36,15 +56,31 @@ function metinOzetiCikar() {
     // Diğer formu temizle
     formlariTemizle('dosyaForm');
 
-    if (!metin) {
+    if (!metin || metin.trim() === '') {
         formKontrol(metinInput, 'warning');
         sonucKutusuKontrol(sonucKutusu, 'warning', 'Lütfen metin giriniz!');
         return;
     }
 
     formKontrol(metinInput, '');
-    $.post('/SHA/MetinOzetiCikar', { metin: metin }, function (data) {
-        sonucKutusuKontrol(sonucKutusu, '', data.ozet);
+
+    // jQuery kullanarak düzgün POST isteği
+    $.ajax({
+        url: '/SHA/MetinOzetiCikar',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ metin: metin }),
+        success: function (data) {
+            if (data && data.ozet) {
+                sonucKutusuKontrol(sonucKutusu, '', data.ozet);
+            } else {
+                sonucKutusuKontrol(sonucKutusu, 'error', 'Özet çıkarılamadı!');
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error('AJAX Error:', error);
+            sonucKutusuKontrol(sonucKutusu, 'error', 'Hata oluştu: ' + error);
+        }
     });
 }
 
@@ -73,7 +109,15 @@ function dosyaOzetiCikar() {
         processData: false,
         contentType: false,
         success: function (data) {
-            sonucKutusuKontrol(sonucKutusu, '', data.ozet);
+            if (data && data.ozet) {
+                sonucKutusuKontrol(sonucKutusu, '', data.ozet);
+            } else {
+                sonucKutusuKontrol(sonucKutusu, 'error', 'Özet çıkarılamadı!');
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error('AJAX Error:', error);
+            sonucKutusuKontrol(sonucKutusu, 'error', 'Hata oluştu: ' + error);
         }
     });
 }
@@ -100,7 +144,7 @@ function metniSifrele() {
     formKontrol(sifreInput, '');
 
     $.post('/AES/Sifrele', { metin: metin, sifre: sifre }, function (data) {
-        if (data.sifreliMetin.startsWith('Hata oluştu:')) {
+        if (data.sifreliMetin && data.sifreliMetin.startsWith('Hata oluştu:')) {
             sonucKutusuKontrol(sonucKutusu, 'error', 'Şifreleme işlemi başarısız oldu!');
         } else {
             sonucKutusuKontrol(sonucKutusu, '', data.sifreliMetin);
@@ -129,7 +173,7 @@ function metniCoz() {
     formKontrol(sifreInput, '');
 
     $.post('/AES/Coz', { sifreliMetin: sifreliMetin, sifre: sifre }, function (data) {
-        if (data.cozulmusMetin.startsWith('Hata oluştu:')) {
+        if (data.cozulmusMetin && data.cozulmusMetin.startsWith('Hata oluştu:')) {
             if (data.cozulmusMetin.includes('Base-64')) {
                 sonucKutusuKontrol(sonucKutusu, 'error', 'Geçersiz şifreli metin formatı!');
                 formKontrol(metinInput, 'error');

@@ -46,7 +46,7 @@
     </div>
 
     <!-- Özet Sonucu -->
-    <div class="cyber-card mt-4">
+    <div class="cyber-card mt-4 result-card">
         <h3 class="mb-4">
             <i class="fas fa-hashtag me-2"></i>
             SHA-256 Özeti
@@ -61,62 +61,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    console.log("SHA script yüklendi");
-
-    document.querySelector('[onclick="metinOzetiCikar()"]')?.addEventListener("click", () => {
-        const metin = document.getElementById("metin").value;
-        fetch("/SHA/MetinOzetiCikar", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ metin: metin })
-        })
-        .then(r => r.json())
-        .then(d => {
-            document.getElementById("ozet").innerText = d.ozet || "Boş sonuç döndü";
-        })
-        .catch(e => {
-            document.getElementById("ozet").innerText = "Hata oluştu: " + e;
-        });
-    });
-
-    document.querySelector('[onclick="dosyaOzetiCikar()"]')?.addEventListener("click", () => {
-        const dosya = document.getElementById("dosya").files[0];
-        const formData = new FormData();
-        formData.append("dosya", dosya);
-        fetch("/SHA/DosyaOzetiCikar", {
-            method: "POST",
-            body: formData
-        })
-        .then(r => r.json())
-        .then(d => {
-            document.getElementById("ozet").innerText = d.ozet || "Boş sonuç döndü";
-        })
-        .catch(e => {
-            document.getElementById("ozet").innerText = "Hata oluştu: " + e;
-        });
-    });
-</script>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        console.log("SHA script yüklendi");
-
-        document.querySelector('[onclick="metinOzetiCikar()"]')?.addEventListener("click", () => {
-            const metin = document.getElementById("metin").value;
-            fetch("/SHA/MetinOzetiCikar", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ metin: metin })
-            })
-            .then(r => r.json())
-            .then(d => {
-                document.getElementById("ozet").innerText = d.ozet || "Boş sonuç döndü";
-            })
-            .catch(e => {
-                document.getElementById("ozet").innerText = "Hata oluştu: " + e;
-            });
-        });
-    });
-</script>

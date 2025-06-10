@@ -20,9 +20,12 @@ namespace KriptografiFinalProje.Controllers
         }
 
         [HttpPost]
-        public IActionResult MetinOzetiCikar(string metin)
+        public IActionResult MetinOzetiCikar([FromBody] MetinRequest request)
         {
-            var ozet = _shaMetin.MetinOzetiCikar(metin);
+            if (request == null || string.IsNullOrEmpty(request.Metin))
+                return Json(new { ozet = "Metin boş olamaz!" });
+
+            var ozet = _shaMetin.MetinOzetiCikar(request.Metin);
             return Json(new { ozet });
         }
 
@@ -38,5 +41,10 @@ namespace KriptografiFinalProje.Controllers
                 return Json(new { ozet });
             }
         }
+    }
+
+    public class MetinRequest
+    {
+        public string Metin { get; set; } = string.Empty;
     }
 }
