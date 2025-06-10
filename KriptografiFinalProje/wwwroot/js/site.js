@@ -11,7 +11,24 @@ function sonucKutusuKontrol(element, durum, mesaj) {
     if (durum) {
         element.classList.add(durum);
     }
-    element.textContent = mesaj;
+
+    // Mevcut kopyalama butonunu koru
+    const mevcutKopyaButonu = element.querySelector('.copy-btn');
+
+    if (mevcutKopyaButonu) {
+        // Metni güncelle ama butonu koru
+        const textNode = element.childNodes[0];
+        if (textNode && textNode.nodeType === Node.TEXT_NODE) {
+            textNode.textContent = mesaj;
+        } else {
+            // Metin node yoksa yeni bir tane oluştur
+            const newTextNode = document.createTextNode(mesaj);
+            element.insertBefore(newTextNode, mevcutKopyaButonu);
+        }
+    } else {
+        // Kopyalama butonu yoksa sadece metni ayarla
+        element.textContent = mesaj;
+    }
 }
 
 // Form temizleme fonksiyonu
@@ -25,22 +42,35 @@ function formlariTemizle(formId) {
     }
 }
 
-// Metin kopyalama fonksiyonu
+// Metin kopyalama fonksiyonu - Güncellenmiş versiyon
 function metniKopyala(elementId) {
     const element = document.getElementById(elementId);
-    const text = element.textContent || element.innerText;
+    // Sadece metin içeriğini al, kopyalama butonunu hariç tut
+    const textNodes = [];
+    element.childNodes.forEach(node => {
+        if (node.nodeType === Node.TEXT_NODE) {
+            textNodes.push(node.textContent);
+        }
+    });
+
+    const text = textNodes.join('').trim();
 
     if (text && !text.includes('görüntülenecek') && !text.includes('Hata oluştu')) {
         navigator.clipboard.writeText(text).then(function () {
             // Başarılı kopyalama bildirimi
-            const originalText = element.innerHTML;
-            element.innerHTML = '<i class="fas fa-check"></i> Kopyalandı!';
-            element.style.color = '#00ff00';
+            const kopyaButonu = element.querySelector('.copy-btn');
+            if (kopyaButonu) {
+                const originalIcon = kopyaButonu.innerHTML;
+                kopyaButonu.innerHTML = '<i class="fas fa-check"></i>';
+                kopyaButonu.style.color = '#00ff00';
+                kopyaButonu.title = 'Kopyalandı!';
 
-            setTimeout(() => {
-                element.innerHTML = originalText;
-                element.style.color = '';
-            }, 2000);
+                setTimeout(() => {
+                    kopyaButonu.innerHTML = originalIcon;
+                    kopyaButonu.style.color = '';
+                    kopyaButonu.title = 'Kopyala';
+                }, 2000);
+            }
         }).catch(function (err) {
             console.error('Kopyalama hatası: ', err);
         });
@@ -63,6 +93,9 @@ function metinOzetiCikar() {
     }
 
     formKontrol(metinInput, '');
+
+    // Loading durumu göster
+    sonucKutusuKontrol(sonucKutusu, '', 'Özet çıkarılıyor...');
 
     // jQuery kullanarak düzgün POST isteği
     $.ajax({
@@ -99,6 +132,10 @@ function dosyaOzetiCikar() {
     }
 
     formKontrol(dosyaInput, '');
+
+    // Loading durumu göster
+    sonucKutusuKontrol(sonucKutusu, '', 'Dosya özeti çıkarılıyor...');
+
     const formData = new FormData();
     formData.append('dosya', dosya);
 
@@ -143,6 +180,9 @@ function metniSifrele() {
     formKontrol(metinInput, '');
     formKontrol(sifreInput, '');
 
+    // Loading durumu göster
+    sonucKutusuKontrol(sonucKutusu, '', 'Şifreleniyor...');
+
     $.post('/AES/Sifrele', { metin: metin, sifre: sifre }, function (data) {
         if (data.sifreliMetin && data.sifreliMetin.startsWith('Hata oluştu:')) {
             sonucKutusuKontrol(sonucKutusu, 'error', 'Şifreleme işlemi başarısız oldu!');
@@ -171,6 +211,9 @@ function metniCoz() {
 
     formKontrol(metinInput, '');
     formKontrol(sifreInput, '');
+
+    // Loading durumu göster
+    sonucKutusuKontrol(sonucKutusu, '', 'Şifre çözülüyor...');
 
     $.post('/AES/Coz', { sifreliMetin: sifreliMetin, sifre: sifre }, function (data) {
         if (data.cozulmusMetin && data.cozulmusMetin.startsWith('Hata oluştu:')) {
