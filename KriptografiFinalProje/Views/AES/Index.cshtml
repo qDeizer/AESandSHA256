@@ -1,0 +1,73 @@
+@{
+    ViewData["Title"] = "AES";
+}
+
+<div class="container">
+    <h1 class="text-center mb-5 page-title" style="color: #00ff00; text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);">
+        AES Şifreleme ve Çözme
+    </h1>
+
+    <div class="row">
+        <!-- Şifreleme Bölümü -->
+        <div class="col-md-6 mb-4">
+            <div class="cyber-card h-100 left-card">
+                <h3 class="mb-4">
+                    <i class="fas fa-lock me-2"></i>
+                    Metin Şifreleme
+                </h3>
+                <div class="form-group mb-3">
+                    <label for="sifrelenecekMetin">Metin</label>
+                    <textarea id="sifrelenecekMetin" class="form-control" rows="4"></textarea>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="sifrelemeAnahtari">Şifre</label>
+                    <input type="password" id="sifrelemeAnahtari" class="form-control">
+                </div>
+                <button onclick="metniSifrele()" class="cyber-btn mb-3">
+                    <i class="fas fa-lock me-2"></i>
+                    Şifrele
+                </button>
+                <div class="result-container">
+                    <label>Şifrelenmiş Metin</label>
+                    <div id="sifreliMetin" class="result-box">
+                        Şifrelenmiş metin burada görüntülenecek...
+                        <button class="copy-btn" onclick="metniKopyala('sifreliMetin')" title="Kopyala">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Şifre Çözme Bölümü -->
+        <div class="col-md-6 mb-4">
+            <div class="cyber-card h-100 right-card">
+                <h3 class="mb-4">
+                    <i class="fas fa-unlock me-2"></i>
+                    Şifre Çözme
+                </h3>
+                <div class="form-group mb-3">
+                    <label for="cozulecekMetin">Şifreli Metin</label>
+                    <textarea id="cozulecekMetin" class="form-control" rows="4"></textarea>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="cozmeAnahtari">Şifre</label>
+                    <input type="password" id="cozmeAnahtari" class="form-control">
+                </div>
+                <button onclick="metniCoz()" class="cyber-btn mb-3">
+                    <i class="fas fa-unlock me-2"></i>
+                    Şifreyi Çöz
+                </button>
+                <div class="result-container">
+                    <label>Çözülmüş Metin</label>
+                    <div id="cozulmusMetin" class="result-box">
+                        Çözülmüş metin burada görüntülenecek...
+                        <button class="copy-btn" onclick="metniKopyala('cozulmusMetin')" title="Kopyala">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

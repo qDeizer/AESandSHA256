@@ -1,0 +1,9 @@
+# Visual Studio için genel .gitignore
+.vs/
+*.user
+*.suo
+*.dbmdl
+*.log
+*.vscode/
+bin/
+obj/

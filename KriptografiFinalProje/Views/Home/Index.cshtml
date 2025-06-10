@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Ana Sayfa";
+}
+
+<div class="text-center">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-5 mb-4">
+            <div class="cyber-card h-100 left-card">
+                <i class="fas fa-fingerprint fa-4x mb-3" style="color: #00ff00;"></i>
+                <h2>SHA-256</h2>
+                <p class="mb-4">Metin ve dosya özeti çıkarma işlemleri için SHA-256 algoritması.</p>
+                <a asp-controller="SHA" asp-action="Index" class="home-btn">
+                    SHA-256'ya Git
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-5 mb-4">
+            <div class="cyber-card h-100 right-card">
+                <i class="fas fa-key fa-4x mb-3" style="color: #00ff00;"></i>
+                <h2>AES</h2>
+                <p class="mb-4">Metin şifreleme ve şifre çözme işlemleri için AES algoritması.</p>
+                <a asp-controller="AES" asp-action="Index" class="home-btn">
+                    AES'e Git
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
